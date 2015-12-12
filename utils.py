@@ -5,6 +5,12 @@ import os
 import pygame
 
 
+class Arithmetic:
+    @staticmethod
+    def lerp(val1, val2, percent):
+        return round(val1 + (val2 - val1) * percent)
+
+
 class Constants:
     FPS = 60
     GRAVITY = 9.8

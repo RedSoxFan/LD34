@@ -3,10 +3,13 @@
 
 import os
 import pygame
+from pygame.color import Color
+from pygame.rect import Rect
 import sys
 
 from player import Player
-from utils import Constants, Resources
+from platform import Platform, UnbreakablePlatform
+from utils import Arithmetic, Constants, Resources
 
 
 class Game(object):
@@ -24,6 +27,16 @@ class Game(object):
         self.buffer = pygame.surface.Surface((Constants.WIDTH, Constants.HEIGHT))
         # Create objects
         self.player = Player()
+        self.platforms = pygame.sprite.Group()
+        left = UnbreakablePlatform("#111111", Rect(0, 0, 50, Constants.HEIGHT))
+        right = UnbreakablePlatform("#111111", Rect(Constants.WIDTH - 50, 0, 50, Constants.HEIGHT))
+        tl = UnbreakablePlatform("#111111", Rect(50, 0, Constants.WIDTH // 2 - 100, 50))
+        tr = UnbreakablePlatform("#111111", Rect(Constants.WIDTH // 2 + 50, 0, Constants.WIDTH // 2 - 100, 50))
+        bottom = UnbreakablePlatform("#111111", Rect(50, Constants.HEIGHT - 50, Constants.WIDTH - 100, 50))
+        break1 = Platform("#FFFF00", 20000, 24000, 20, Rect(Constants.WIDTH // 2 - 50, 0, 100, 50))
+        break2 = Platform("#FF6600", 24000, 26000, 100, Rect(Constants.WIDTH // 2 - 100, 100, 200, 50))
+        break3 = Platform("#FF0000", 30000, 50000, 500, Rect(Constants.WIDTH // 2 - 100, 200, 200, 50))
+        self.platforms.add(left, right, tl, tr, bottom, break1, break2, break3)
         # Game Loop
         clock = pygame.time.Clock()
         self.running = True
@@ -44,7 +57,8 @@ class Game(object):
         # Clear the buffer
         self.buffer.fill(pygame.Color(0, 0, 0))
         # Tick the objects
-        self.player.tick(self.buffer, delta)
+        self.player.tick(self.buffer, delta, self.platforms)
+        map(lambda p: p.tick(self.buffer, delta), self.platforms)
         # Paint buffer to screen
         self.screen.blit(self.buffer, (0, 0))
         pygame.display.flip()
