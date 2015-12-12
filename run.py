@@ -4,8 +4,8 @@
 import os
 import pygame
 import sys
-
-from player import Player
+from input import *
+from player import *
 from utils import Constants, Resources
 
 
@@ -35,10 +35,6 @@ class Game(object):
     def event(self, e):
         if e.type == pygame.QUIT:
             self.running = False
-        elif e.type == pygame.KEYDOWN:
-            pass
-        elif e.type == pygame.KEYUP:
-            pass
 
     def tick(self, delta):
         # Clear the buffer
@@ -48,7 +44,6 @@ class Game(object):
         # Paint buffer to screen
         self.screen.blit(self.buffer, (0, 0))
         pygame.display.flip()
-
 
 if __name__ == "__main__":
     game = Game()
