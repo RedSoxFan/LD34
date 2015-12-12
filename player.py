@@ -3,7 +3,7 @@
 
 import math
 import pygame
-from utils import Constants
+from utils import Arithmetic, Constants
 
 
 class Player(pygame.sprite.Sprite):
@@ -22,6 +22,17 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = -50
         self.health = self.maxhealth
 
+    def draw_health(self, surface, font, x, y):
+        txt = font.render("Health: %d / %d" % (self.health, self.maxhealth), True, pygame.color.Color("#FFFFFF"))
+        surface.blit(txt, (x, y))
+
+
+    def draw_healthbar(self, surface, x, y, width, height):
+        pygame.draw.rect(surface, pygame.color.Color(0, 255, 0), (x, y, width, height))
+        hw = Arithmetic.lerp(0, width - 2, 1 - self.health / self.maxhealth)
+        if hw > 0:
+            pygame.draw.rect(surface, pygame.color.Color(255, 0, 0), (x + 1, y + 1, hw, height - 2))
+
     def event(self, event):
         pass
 
@@ -35,7 +46,7 @@ class Player(pygame.sprite.Sprite):
 
     @property
     def maxhealth(self):
-        return 5000
+        return 5000.0
 
     def tick(self, surface, delta, platforms):
         # If alive, tick
@@ -48,13 +59,13 @@ class Player(pygame.sprite.Sprite):
             for p in pygame.sprite.spritecollide(self, platforms, False):
                 if not p.can_break(self.force):
                     self.health = 0
+                    print "DEBUG: Splat ~ Game Over ~ Health is %d / %d" % (self.health, self.maxhealth)
                 elif p.can_splinter(self.force):
                     self.health = max(0, self.health - p.damage)
                     p.kill()
                     print "DEBUG: Splinter ~ Health is %d / %d" % (self.health, self.maxhealth)
                 else:
                     p.kill()
-                    print "DEBUG: Splat ~ Game Over ~ Health is %d / %d" % (self.health, self.maxhealth)
         # If on screen, paint
         if self.rect.bottom > 0:
             surface.blit(self.image, (self.rect.x, self.rect.y))
