@@ -15,7 +15,9 @@ class Tile(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def tick(self, surface, delta, step):
+    def tick(self, delta, step):
         self.rect.y -= step
+
+    def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 

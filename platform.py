@@ -11,7 +11,7 @@ class Platform(pygame.sprite.Sprite):
 
         # Initialize the image
         self.image = pygame.Surface(bounds.size)
-        self.image.fill(pygame.Color(color))
+        self.image.fill(color)
 
         # Get the bounding box
         self.rect = self.image.get_rect()
@@ -27,6 +27,9 @@ class Platform(pygame.sprite.Sprite):
 
     def can_splinter(self, force):
         return self.can_break(force) and force < self.dforce
+
+    def step(self, s):
+        self.rect.y -= s
 
     def tick(self, surface, delta):
         surface.blit(self.image, (self.rect.x, self.rect.y))

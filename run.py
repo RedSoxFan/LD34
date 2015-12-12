@@ -67,13 +67,14 @@ class Game(object):
 
         # Create the platforms
         self.platforms.empty()
-        tl = UnbreakablePlatform("#111111", Rect(0, 0, Constants.WIDTH // 2 - 50, 50))
-        tr = UnbreakablePlatform("#111111", Rect(Constants.WIDTH // 2 + 50, 0, Constants.WIDTH // 2 - 50, 50))
-        bottom = UnbreakablePlatform("#111111", Rect(0, Constants.HEIGHT-50, Constants.WIDTH, 50))
-        break1 = Platform("#FFFF00", 20000, 24000, 20, Rect(Constants.WIDTH // 2 - 50, 0, 100, 50))
-        break2 = Platform("#FF6600", 24000, 26000, 300, Rect(Constants.WIDTH // 2 - 100, 100, 200, 50))
-        break3 = Platform("#FF0000", 30000, 50000, 500, Rect(Constants.WIDTH // 2 - 100, 250, 200, 50))
-        self.platforms.add(tl, tr, bottom, break1, break2, break3)
+        tl = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, 0, Constants.WIDTH // 2 - 75, 50))
+        tr = UnbreakablePlatform(pygame.Color("#111111"), Rect(Constants.WIDTH // 2 + 75, 0, Constants.WIDTH // 2 - 75, 50))
+        bottom = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, Constants.HEIGHT-50, Constants.WIDTH, 50))
+        # break1 = Platform("#FFFF00", 20000, 24000, 20, Rect(Constants.WIDTH // 2 - 50, 0, 100, 50))
+        # break2 = Platform("#FF6600", 24000, 26000, 300, Rect(Constants.WIDTH // 2 - 100, 100, 200, 50))
+        # break3 = Platform("#FF0000", 30000, 50000, 500, Rect(Constants.WIDTH // 2 - 100, 250, 200, 50))
+        # self.platforms.add(tl, tr, bottom, break1, break2, break3)
+        self.platforms.add(tl, tr, bottom)
 
         # Create the world
         self.world = World()
@@ -92,7 +93,7 @@ class Game(object):
             self.world.tick(self.buffer, delta)
 
             # Tick the objects
-            self.player.tick(self.buffer, delta, self.platforms)
+            self.player.tick(self.buffer, delta, self.world.platforms)
             map(lambda p: p.tick(self.buffer, delta), self.platforms)
 
             # Draw health bar and mass/force
