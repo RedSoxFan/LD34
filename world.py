@@ -31,30 +31,31 @@ class World:
         self.platforms.add(plat)
 
     def tick(self, surface, delta):
-        self.fallen += self.fallStep
-        self.fallStep += .005
-        map(lambda t: t.tick(delta, self.fallStep), self.tiles)
-        map(lambda p: p.step(self.fallStep), self.platforms)
-        while self.tiles[-1].rect.bottom <= Constants.HEIGHT + Tile.SIZE:
-            bot = self.tiles[-1].rect.bottom
-            col = pygame.Color(0)
-            col.hsva = (360.0 + self.hueShift) % 360.0, 100, 100, 100
-            map(self.tiles.append, [Tile(x, bot, col) for x in [0, Constants.WIDTH - Tile.SIZE]])
-            self.hueShift = (self.hueShift + self.hueStep) % 360.0
+        if delta > 0:
+            self.fallen += self.fallStep
+            self.fallStep += .005
+            map(lambda t: t.tick(delta, self.fallStep), self.tiles)
+            map(lambda p: p.step(self.fallStep), self.platforms)
+            while self.tiles[-1].rect.bottom <= Constants.HEIGHT + Tile.SIZE:
+                bot = self.tiles[-1].rect.bottom
+                col = pygame.Color(0)
+                col.hsva = (360.0 + self.hueShift) % 360.0, 100, 100, 100
+                map(self.tiles.append, [Tile(x, bot, col) for x in [0, Constants.WIDTH - Tile.SIZE]])
+                self.hueShift = (self.hueShift + self.hueStep) % 360.0
 
-            self.tilesUntilPlatform -= 1
-            if self.tilesUntilPlatform == 0:
-                self.tilesUntilPlatform = randint(50, 70)
-                threshold = Arithmetic.lerp(100, 175, (self.tilesUntilPlatform - 50.0) / 20.0)
-                width = randint(max(20, self.lastPlatformWidth - threshold),
-                                min(self.lastPlatformWidth + threshold, 350))
-                self.generatePlatform(width, col)
-                self.lastPlatformWidth = width
+                self.tilesUntilPlatform -= 1
+                if self.tilesUntilPlatform == 0:
+                    self.tilesUntilPlatform = randint(50, 70)
+                    threshold = Arithmetic.lerp(100, 175, (self.tilesUntilPlatform - 50.0) / 20.0)
+                    width = randint(max(20, self.lastPlatformWidth - threshold),
+                                    min(self.lastPlatformWidth + threshold, 350))
+                    self.generatePlatform(width, col)
+                    self.lastPlatformWidth = width
 
-        while self.tiles[0].rect.bottom < 0:
-            self.tiles.pop(0)
-        for plat in self.platforms:
-            if plat.rect.bottom < 0:
-                self.platforms.remove(plat)
+            while self.tiles[0].rect.bottom < 0:
+                self.tiles.pop(0)
+            for plat in self.platforms:
+                if plat.rect.bottom < 0:
+                    self.platforms.remove(plat)
         map(lambda t: t.draw(surface), self.tiles)
         map(lambda t: t.tick(surface, delta), self.platforms)

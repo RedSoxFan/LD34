@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = Constants.WIDTH // 2 - self.rect.width // 2
         self.rect.y = -50
         self.health = self.maxhealth
+        self.ready = False
 
     def draw_force(self, surface, font, x, y):
         txt = font.render("Force: %d" % self.force, True, pygame.color.Color("#FFFFFF"))
@@ -72,9 +73,11 @@ class Player(pygame.sprite.Sprite):
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center
             # If not in the center, fall to center of the screen
-            if self.rect.centery < Constants.HEIGHT // 3:
+            if self.rect.centery < Constants.HEIGHT // 4:
                 self.rect.y += math.ceil(Constants.GRAVITY / Constants.FPS * delta)
-                self.rect.y = min(Constants.HEIGHT // 3, self.rect.y)
+                self.rect.y = min(Constants.HEIGHT // 4, self.rect.y)
+            else:
+                self.ready = True
             # Check collision with platforms
             for p in pygame.sprite.spritecollide(self, platforms, False):
                 if not p.can_break(self.force):

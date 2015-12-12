@@ -31,7 +31,7 @@ class GameOver(Screen):
         surface.blit(go, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT // 4 + h // 2))
 
         # Paint the score
-        txt = "Score: %d" % self.value
+        txt = "Distance: %0.1fkm" % self.value
         sc = fontmap["score"].render(txt, True, pygame.color.Color("#CCCCCC"))
         (w, h) = fontmap["score"].size(txt)
         surface.blit(sc, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT // 2 + h // 2))
