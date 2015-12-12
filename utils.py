@@ -7,6 +7,7 @@ import pygame
 
 class Constants:
     FPS = 60
+    GRAVITY = 9.8
     HEIGHT = 600
     TITLE = "Ludum Dare 34"
     WIDTH = 600
