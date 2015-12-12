@@ -70,6 +70,11 @@ class Keyboard:
     keys = oldkeys
 
     @staticmethod
+    def init():
+        Keyboard.oldkeys = [False] * len(pygame.key.get_pressed())
+        Keyboard.keys = Keyboard.oldkeys
+
+    @staticmethod
     def update():
         Keyboard.oldkeys = Keyboard.keys
         Keyboard.keys = pygame.key.get_pressed()

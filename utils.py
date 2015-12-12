@@ -12,7 +12,9 @@ class Arithmetic:
 
 
 class Constants:
+    EXIT_SCREEN = 0
     FPS = 60
+    GAME_SCREEN = 1
     GRAVITY = 9.8
     GROW_KEY = pygame.K_UP
     HEIGHT = 600
