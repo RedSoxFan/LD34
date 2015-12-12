@@ -22,27 +22,22 @@ class Mouse:
 
     @staticmethod
     def left():
-        Mouse.update()
         return Mouse.state[0] == 1
 
     @staticmethod
     def middle():
-        Mouse.update()
         return Mouse.state[1] == 1
 
     @staticmethod
     def right():
-        Mouse.update()
         return Mouse.state[2] == 1
 
     @staticmethod
     def pressed(ind):
-        Mouse.update()
         return Mouse.oldstate[ind] == 0 and Mouse.state[ind] == 1
 
     @staticmethod
     def released(ind):
-        Mouse.update()
         return Mouse.oldstate[ind] == 1 and Mouse.state[ind] == 0
 
     @staticmethod
@@ -81,7 +76,6 @@ class Keyboard:
 
     @staticmethod
     def down(k, kmap=None):
-        Keyboard.update()
         if kmap is None:
             kmap = Keyboard.keys
         return kmap[k if type(k) is int else ord(k)]

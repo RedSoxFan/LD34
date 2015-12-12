@@ -3,6 +3,7 @@
 
 import math
 import pygame
+from input import Keyboard
 from utils import Arithmetic, Constants
 
 
@@ -22,10 +23,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = -50
         self.health = self.maxhealth
 
+    def draw_force(self, surface, font, x, y):
+        txt = font.render("Force: %d" % self.force, True, pygame.color.Color("#FFFFFF"))
+        surface.blit(txt, (x, y))
+
     def draw_health(self, surface, font, x, y):
         txt = font.render("Health: %d / %d" % (self.health, self.maxhealth), True, pygame.color.Color("#FFFFFF"))
         surface.blit(txt, (x, y))
-
 
     def draw_healthbar(self, surface, x, y, width, height):
         pygame.draw.rect(surface, pygame.color.Color(0, 255, 0), (x, y, width, height))
@@ -33,8 +37,9 @@ class Player(pygame.sprite.Sprite):
         if hw > 0:
             pygame.draw.rect(surface, pygame.color.Color(255, 0, 0), (x + 1, y + 1, hw, height - 2))
 
-    def event(self, event):
-        pass
+    def draw_mass(self, surface, font, x, y):
+        txt = font.render("Mass: %d" % self.mass, True, pygame.color.Color("#FFFFFF"))
+        surface.blit(txt, (x, y))
 
     @property
     def force(self):
@@ -51,6 +56,21 @@ class Player(pygame.sprite.Sprite):
     def tick(self, surface, delta, platforms):
         # If alive, tick
         if self.health > 0:
+            # Check for a resize
+            if Keyboard.down(Constants.GROW_KEY):
+                width = min(self.rect.width + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_WIDTH)
+                height = min(self.rect.height + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_HEIGHT)
+                self.image = pygame.transform.scale(self.image, (width, height))
+                center = self.rect.center
+                self.rect.size = self.image.get_rect().size
+                self.rect.center = center
+            elif Keyboard.down(Constants.SHRINK_KEY):
+                width = max(Constants.MIN_PLAYER_WIDTH, self.rect.width - Constants.SIZE_INTERVAL)
+                height = max(Constants.MIN_PLAYER_HEIGHT, self.rect.height - Constants.SIZE_INTERVAL)
+                self.image = pygame.transform.scale(self.image, (width, height))
+                center = self.rect.center
+                self.rect.size = self.image.get_rect().size
+                self.rect.center = center
             # If not in the center, fall to center of the screen
             if self.rect.centery < Constants.HEIGHT // 2:
                 self.rect.y += math.ceil(Constants.GRAVITY / Constants.FPS * delta)

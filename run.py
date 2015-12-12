@@ -41,10 +41,10 @@ class Game(object):
         break3 = Platform("#FF0000", 30000, 50000, 500, Rect(Constants.WIDTH // 2 - 100, 250, 200, 50))
         self.platforms.add(left, right, tl, tr, bottom, break1, break2, break3)
         # Game Loop
-        clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         self.running = True
         while self.running:
-            delta = clock.tick(Constants.FPS)
+            delta = self.clock.tick(Constants.FPS)
             map(self.event, pygame.event.get())
             self.tick(delta)
 
@@ -53,14 +53,24 @@ class Game(object):
             self.running = False
 
     def tick(self, delta):
+        # Poll input
+        Mouse.update()
+        Keyboard.update()
         # Clear the buffer
         self.buffer.fill(pygame.Color(0, 0, 0))
         # Tick the objects
         self.player.tick(self.buffer, delta, self.platforms)
         map(lambda p: p.tick(self.buffer, delta), self.platforms)
-        # Draw health bar
+        # Draw health bar and mass/force
         self.player.draw_health(self.buffer, self.font, Constants.WIDTH - 200, 5)
         self.player.draw_healthbar(self.buffer, Constants.WIDTH - 200, 25, 180, 10)
+        self.player.draw_mass(self.buffer, self.font, 10, 5)
+        self.player.draw_force(self.buffer, self.font, 10, 25)
+        # Draw FPS
+        text = "FPS: %d" % self.clock.get_fps()
+        surf = self.font.render(text, True, Color("#FFFFFF"))
+        (w, _) = self.font.size(text)
+        self.buffer.blit(surf, (Constants.WIDTH - w - 10, Constants.HEIGHT - 25))
         # Paint buffer to screen
         self.screen.blit(self.buffer, (0, 0))
         pygame.display.flip()
