@@ -2,12 +2,12 @@ import pygame
 
 
 class Tile(pygame.sprite.Sprite):
-    SIZE = 48
+    SIZE = 20
 
     def __init__(self, x, y, col):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.Surface((48, 48))
+        self.image = pygame.Surface((Tile.SIZE, Tile.SIZE))
         self.image.fill(col)
         self.rect = self.image.get_rect()
 

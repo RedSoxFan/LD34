@@ -72,9 +72,9 @@ class Player(pygame.sprite.Sprite):
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center
             # If not in the center, fall to center of the screen
-            if self.rect.centery < Constants.HEIGHT // 2:
+            if self.rect.centery < Constants.HEIGHT // 3:
                 self.rect.y += math.ceil(Constants.GRAVITY / Constants.FPS * delta)
-                self.rect.y = min(Constants.HEIGHT // 2, self.rect.y)
+                self.rect.y = min(Constants.HEIGHT // 3, self.rect.y)
             # Check collision with platforms
             for p in pygame.sprite.spritecollide(self, platforms, False):
                 if not p.can_break(self.force):

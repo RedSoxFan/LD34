@@ -31,7 +31,7 @@ class Game(object):
         # Create window and buffer
         pygame.display.set_caption(Constants.TITLE)
         self.screen = pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT))
-        self.buffer = pygame.surface.Surface((Constants.WIDTH, Constants.HEIGHT))
+        self.buffer = pygame.surface.Surface((Constants.WIDTH, Constants.HEIGHT), pygame.SRCALPHA)
 
         # Create variables objects. These will be populated in reset
         self.player = None
@@ -69,12 +69,12 @@ class Game(object):
         self.platforms.empty()
         tl = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, 0, Constants.WIDTH // 2 - 75, 50))
         tr = UnbreakablePlatform(pygame.Color("#111111"), Rect(Constants.WIDTH // 2 + 75, 0, Constants.WIDTH // 2 - 75, 50))
-        bottom = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, Constants.HEIGHT-50, Constants.WIDTH, 50))
+        # bottom = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, Constants.HEIGHT-50, Constants.WIDTH, 50))
         # break1 = Platform("#FFFF00", 20000, 24000, 20, Rect(Constants.WIDTH // 2 - 50, 0, 100, 50))
         # break2 = Platform("#FF6600", 24000, 26000, 300, Rect(Constants.WIDTH // 2 - 100, 100, 200, 50))
         # break3 = Platform("#FF0000", 30000, 50000, 500, Rect(Constants.WIDTH // 2 - 100, 250, 200, 50))
         # self.platforms.add(tl, tr, bottom, break1, break2, break3)
-        self.platforms.add(tl, tr, bottom)
+        self.platforms.add(tl, tr)
 
         # Create the world
         self.world = World()
@@ -85,7 +85,7 @@ class Game(object):
         Keyboard.update()
 
         # Clear the buffer
-        self.buffer.fill(pygame.Color(0, 0, 0))
+        self.buffer.fill(pygame.Color(0, 0, 0, 255))
 
         # Tick the correct game screen
         if self.gamescreen == Constants.GAME_SCREEN:

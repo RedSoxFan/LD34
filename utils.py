@@ -17,7 +17,7 @@ class Constants:
     GAME_SCREEN = 1
     GRAVITY = 9.8
     GROW_KEY = pygame.K_UP
-    HEIGHT = 600
+    HEIGHT = 700
     MAX_PLAYER_HEIGHT = 300
     MAX_PLAYER_WIDTH = 300
     MIN_PLAYER_HEIGHT = 10

@@ -1,7 +1,7 @@
 import pygame
 from tile import Tile
 from platform import *
-from utils import Constants
+from utils import Arithmetic, Constants
 from random import randint
 
 
@@ -12,6 +12,7 @@ class World:
         self.hueShift = 0
         self.hueStep = 3
         self.tilesUntilPlatform = 20
+        self.lastPlatformWidth = 50
         self.tiles = [Tile(x, y, pygame.Color(0, 255, 0)) for x in [0, Constants.WIDTH - Tile.SIZE] for y in xrange(0, Constants.HEIGHT, Tile.SIZE)]
         self.platforms = pygame.sprite.Group()
 
@@ -19,8 +20,8 @@ class World:
         y = self.tiles[-1].rect.top
         sideWidth = (Constants.WIDTH - 2 * Tile.SIZE - width) // 2
 
-        l = UnbreakablePlatform(col, pygame.Rect(Tile.SIZE, y, sideWidth, Tile.SIZE))
-        r = UnbreakablePlatform(col, pygame.Rect(Tile.SIZE + sideWidth + width, y, sideWidth, Tile.SIZE))
+        l = UnbreakablePlatform(pygame.color.Color("#FFFFFF"), pygame.Rect(Tile.SIZE, y, sideWidth, Tile.SIZE))
+        r = UnbreakablePlatform(pygame.color.Color("#FFFFFF"), pygame.Rect(Tile.SIZE + sideWidth + width, y, sideWidth, Tile.SIZE))
         self.platforms.add(l)
         self.platforms.add(r)
 
@@ -43,8 +44,12 @@ class World:
 
             self.tilesUntilPlatform -= 1
             if self.tilesUntilPlatform == 0:
-                self.tilesUntilPlatform = randint(10, 30)
-                self.generatePlatform(randint(20, 350), col)
+                self.tilesUntilPlatform = randint(50, 70)
+                threshold = Arithmetic.lerp(100, 175, (self.tilesUntilPlatform - 50.0) / 20.0)
+                width = randint(max(20, self.lastPlatformWidth - threshold),
+                                min(self.lastPlatformWidth + threshold, 350))
+                self.generatePlatform(width, col)
+                self.lastPlatformWidth = width
 
         while self.tiles[0].rect.bottom < 0:
             self.tiles.pop(0)
