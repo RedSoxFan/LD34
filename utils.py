@@ -10,10 +10,21 @@ class Arithmetic:
     def lerp(val1, val2, percent):
         return round(val1 + (val2 - val1) * percent)
 
+    @staticmethod
+    def b2dToPix(x):
+        return int(x*Constants.PPM)
+
+    @staticmethod
+    def pixToB2d(x):
+        return float(x)/Constants.PPM
+
+
 
 class Constants:
     EXIT_SCREEN = 0
     FPS = 60
+    TIME_STEP = 1.0 / FPS
+    PPM = 20.0
     GAME_SCREEN = 1
     GRAVITY = 9.8
     GROW_KEY = pygame.K_UP

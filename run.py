@@ -6,7 +6,6 @@ import pygame
 from pygame.color import Color
 from pygame.rect import Rect
 import sys
-
 from input import *
 from player import Player
 from world import World

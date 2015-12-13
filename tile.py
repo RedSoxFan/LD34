@@ -1,5 +1,6 @@
 import pygame
 
+from Box2D import *
 
 class Tile(pygame.sprite.Sprite):
     SIZE = 20
@@ -15,9 +16,10 @@ class Tile(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+        self.body = None
+
     def tick(self, delta, step):
         self.rect.y -= step
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
-

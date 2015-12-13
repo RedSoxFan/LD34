@@ -3,7 +3,8 @@
 
 import pygame
 import sys
-
+from utils import Arithmetic
+from Box2D import *
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, color, breakforce, damforce, dam, bounds):
@@ -22,6 +23,8 @@ class Platform(pygame.sprite.Sprite):
         self.dforce = damforce
         self.damage = dam
 
+        self.body = None
+
     def can_break(self, force):
         return force >= self.bforce
 
@@ -30,6 +33,9 @@ class Platform(pygame.sprite.Sprite):
 
     def step(self, s):
         self.rect.y -= s
+        # self.body.position -= (0, Arithmetic.pixToB2d(s))
+        if self.body:
+            self.body.position = map(Arithmetic.pixToB2d, (self.rect.x, self.rect.y))
 
     def tick(self, surface, delta):
         surface.blit(self.image, (self.rect.x, self.rect.y))
