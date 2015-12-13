@@ -13,21 +13,21 @@ class World:
         self.hueStep = 3
         self.tilesUntilPlatform = 20
         self.lastPlatformWidth = 50
-        self.tiles = [Tile(x, y, pygame.Color(0, 255, 0)) for x in [0, Constants.WIDTH - Tile.SIZE] for y in xrange(0, Constants.HEIGHT, Tile.SIZE)]
+        self.tiles = [Tile(x, y) for x in [0, Constants.WIDTH - Tile.SIZE] for y in xrange(0, Constants.HEIGHT, Tile.SIZE)]
         self.platforms = pygame.sprite.Group()
 
     def generatePlatform(self, width, col):
         y = self.tiles[-1].rect.top
         sideWidth = (Constants.WIDTH - 2 * Tile.SIZE - width) // 2
 
-        l = UnbreakablePlatform(pygame.color.Color("#FFFFFF"), pygame.Rect(Tile.SIZE, y, sideWidth, Tile.SIZE))
-        r = UnbreakablePlatform(pygame.color.Color("#FFFFFF"), pygame.Rect(Tile.SIZE + sideWidth + width, y, sideWidth, Tile.SIZE))
+        l = UnbreakablePlatform(pygame.Rect(Tile.SIZE, y, sideWidth, Tile.SIZE), hueShift=self.hueShift)
+        r = UnbreakablePlatform(pygame.Rect(Tile.SIZE + sideWidth + width, y, sideWidth, Tile.SIZE), hueShift=self.hueShift)
         self.platforms.add(l)
         self.platforms.add(r)
 
         dforce = (.75*width)**2 * Constants.GRAVITY
         bforce = (.5*width)**2 * Constants.GRAVITY
-        plat = Platform(pygame.Color("#FF0000"), int(bforce), int(dforce), width, pygame.Rect(Tile.SIZE + sideWidth, y, width, Tile.SIZE))
+        plat = Platform(int(bforce), int(dforce), width, pygame.Rect(Tile.SIZE + sideWidth, y, width, Tile.SIZE))
         self.platforms.add(plat)
 
     def tick(self, surface, delta):
@@ -40,7 +40,7 @@ class World:
                 bot = self.tiles[-1].rect.bottom
                 col = pygame.Color(0)
                 col.hsva = (360.0 + self.hueShift) % 360.0, 100, 100, 100
-                map(self.tiles.append, [Tile(x, bot, col) for x in [0, Constants.WIDTH - Tile.SIZE]])
+                map(self.tiles.append, [Tile(x, bot, hueShift=self.hueShift) for x in [0, Constants.WIDTH - Tile.SIZE]])
                 self.hueShift = (self.hueShift + self.hueStep) % 360.0
 
                 self.tilesUntilPlatform -= 1

@@ -4,14 +4,21 @@
 import pygame
 import sys
 
+from utils import Resources
+from tile import Tile
+
 
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, color, breakforce, damforce, dam, bounds):
+    def __init__(self, breakforce, damforce, dam, bounds, imname="diamond-cross.xpm", hueShift=0):
         pygame.sprite.Sprite.__init__(self)
 
         # Initialize the image
-        self.image = pygame.Surface(bounds.size)
-        self.image.fill(color)
+        self.subimage = Resources.load_colorized_image(imname, hueShift, (Tile.SIZE, Tile.SIZE))
+        self.image = pygame.Surface(bounds.size, pygame.SRCALPHA)
+
+        for y in xrange(0, self.image.get_rect().height, self.subimage.get_rect().height):
+            for x in xrange(0, self.image.get_rect().width, self.subimage.get_rect().width):
+                self.image.blit(self.subimage, (x, 0))
 
         # Get the bounding box
         self.rect = self.image.get_rect()
@@ -36,5 +43,5 @@ class Platform(pygame.sprite.Sprite):
 
 
 class UnbreakablePlatform(Platform):
-    def __init__(self, color, bounds):
-        Platform.__init__(self, color, sys.maxint, sys.maxint, sys.maxint, bounds)
+    def __init__(self, bounds, imname="square-cross3.xpm", hueShift=0):
+        Platform.__init__(self, sys.maxint, sys.maxint, sys.maxint, bounds, imname, hueShift)

@@ -35,8 +35,6 @@ class Game(object):
 
         # Create variables objects. These will be populated in reset
         self.player = None
-        self.platforms = pygame.sprite.Group()
-        self.topmid = UnbreakablePlatform(pygame.Color("#111111"), Rect(Constants.WIDTH // 2 - 75, 0, 150, 50))
         self.world = None
 
         # Initialize font map
@@ -66,12 +64,6 @@ class Game(object):
         # Create the player
         self.player = Player()
 
-        # Create the platforms
-        self.platforms.empty()
-        tl = UnbreakablePlatform(pygame.Color("#111111"), Rect(0, 0, Constants.WIDTH // 2 - 75, 50))
-        tr = UnbreakablePlatform(pygame.Color("#111111"), Rect(Constants.WIDTH // 2 + 75, 0, Constants.WIDTH // 2 - 75, 50))
-        self.platforms.add(tl, tr)
-
         # Create the world
         self.world = World()
 
@@ -90,17 +82,20 @@ class Game(object):
 
             # Tick the objects
             self.player.tick(self.buffer, delta, self.world.platforms)
-            map(lambda p: p.tick(self.buffer, delta), self.platforms)
 
             # If the player is fallen in, close the "hatch" and show distance
-            if self.player.rect.top > self.topmid.rect.bottom:
-                self.topmid.tick(self.buffer, delta)
+            if self.player.rect.top > 50:
+                pygame.draw.rect(self.buffer, pygame.color.Color("#111111"), (0, 0, Constants.WIDTH, 50))
 
                 # Draw distance
                 txt = "%0.1fkm" % (self.world.fallen / 1000)
                 dist = self.fontmap["score"].render(txt, True, pygame.color.Color("#FFFFFF"))
                 (w, h) = self.fontmap["score"].size(txt)
                 self.buffer.blit(dist, (Constants.WIDTH // 2 - w // 2, 25 - h // 2))
+            else:
+                pygame.draw.rect(self.buffer, pygame.color.Color("#111111"), (0, 0, Constants.WIDTH // 2 - 75, 50))
+                pygame.draw.rect(self.buffer, pygame.color.Color("#111111"),
+                                 (Constants.WIDTH // 2 + 75, 0, Constants.WIDTH // 2 - 75, 50))
 
             # Draw health bar and mass/force
             self.player.draw_health(self.buffer, self.fontmap["hud"], Constants.WIDTH - 200, 5)
