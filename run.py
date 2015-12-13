@@ -36,12 +36,15 @@ class Game(object):
         # Create variables objects. These will be populated in reset
         self.player = None
         self.world = None
+        self.messages = []
 
         # Initialize font map
         self.fontmap = {"hud": pygame.font.SysFont("monospace", 14),
                         "title": pygame.font.SysFont("monospace", 48),
                         "option": pygame.font.SysFont("monospace", 28),
-                        "score": pygame.font.SysFont("monospace", 28)}
+                        "score": pygame.font.SysFont("monospace", 28),
+                        "msgtitle": pygame.font.SysFont("monospace", 24),
+                        "msgbody": pygame.font.SysFont("monospace", 22)}
 
         # Initialize main menu
         screens.MainMenu.register_option("Play", Constants.GAME_SCREEN)
@@ -67,6 +70,9 @@ class Game(object):
         # Create the world
         self.world = World()
 
+        # Empty messages
+        self.messages = []
+
     def tick(self, delta):
         # Poll input
         Mouse.update()
@@ -81,7 +87,18 @@ class Game(object):
             self.world.tick(self.buffer, delta if (self.player.ready and self.player.alive) else 0)
 
             # Tick the objects
-            self.player.tick(self.buffer, delta, self.world.platforms)
+            msgs = self.player.tick(self.buffer, delta, self.world.platforms)
+            if len(msgs) > 0:
+                map(self.messages.append, msgs)
+
+            # Draw messages
+            self.messages = [msg for msg in self.messages if msg.alive]
+            for msg in self.messages:
+                msg.tick(self.buffer, delta, self.fontmap,
+                         {"msgtitle": pygame.color.Color("#FFFFFF"),
+                          "msggood": pygame.color.Color("#00FF00"),
+                          "msgneutral": pygame.color.Color("#FFFF00"),
+                          "msgbad": pygame.color.Color("#FF0000")})
 
             # If the player is fallen in, close the "hatch" and show distance
             if self.player.rect.top >= 50:

@@ -48,11 +48,14 @@ class Resources:
     def load_colorized_image(name, hueShift, size=None):
         image = Resources.load_image(name, size=size)
 
-        pxls = pygame.PixelArray(image)
-        for x, y in ((x, y) for x in xrange(image.get_width()) for y in xrange(image.get_height())):
-            col = image.unmap_rgb(pxls[x, y])
-            val = ((col.hsva[0] + hueShift) % 360, min(col.hsva[1], 100), min(col.hsva[2], 100), min(col.hsva[3], 255))
-            col.hsva = val
-            pxls[x, y] = col
+        try:
+            from pygame import PixelArray
+            pxls = pygame.PixelArray(image)
+            for x, y in ((x, y) for x in xrange(image.get_width()) for y in xrange(image.get_height())):
+                pxls[x, y] = Graphics.hue_shift(image.unmap_rgb(pxls[x, y]), hueShift)
+        except ImportError:
+            col = pygame.color.Color(0)
+            col.hsva = (hueShift, 50, 50, 255)
+            image.fill(col, None, pygame.BLEND_RGBA_ADD)
 
         return image

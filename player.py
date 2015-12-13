@@ -4,6 +4,7 @@
 import math
 import pygame
 from input import Keyboard
+from messages import Message
 from utils import Arithmetic, Constants, Graphics
 
 
@@ -63,6 +64,7 @@ class Player(pygame.sprite.Sprite):
         return 5000.0
 
     def tick(self, surface, delta, platforms):
+        msgs = []
         # If alive, tick
         if self.health > 0:
             # Check for a resize
@@ -91,14 +93,15 @@ class Player(pygame.sprite.Sprite):
             # Check collision with platforms
             for p in pygame.sprite.spritecollide(self, platforms, False):
                 if not p.can_break(self.force):
+                    msgs.append(Message("Splat\n-%d" % self.health, self.rect.right + 100, self.rect.centery, "bad"))
                     self.health = 0
-                    print "DEBUG: Splat ~ Game Over ~ Health is %d / %d" % (self.health, self.maxhealth)
                 elif p.can_splinter(self.force):
                     self.health = max(0, self.health - p.damage)
                     p.kill()
-                    print "DEBUG: Splinter ~ Health is %d / %d" % (self.health, self.maxhealth)
+                    msgs.append(Message("Splinter\n-%d" % p.damage, self.rect.right + 100, self.rect.centery, "bad"))
                 else:
                     p.kill()
         # If on screen, paint
         if self.rect.bottom > 0:
             surface.blit(self.image, (self.rect.x, self.rect.y))
+        return msgs
