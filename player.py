@@ -4,7 +4,7 @@
 import math
 import pygame
 from input import Keyboard
-from utils import Arithmetic, Constants, Resources
+from utils import Arithmetic, Constants, Graphics
 
 
 class Player(pygame.sprite.Sprite):
@@ -12,15 +12,21 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Initialize the image
-        self.original = Resources.load_colorized_image("square.xpm", 200)
-        self.image = pygame.transform.scale(self.original.copy(), (50, 50)).convert_alpha()
+        self.image = pygame.Surface((50, 50), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
+        self.__draw_image()
 
         # Initialize some physical properties
         self.rect.x = Constants.WIDTH // 2 - self.rect.width // 2
         self.rect.y = -50
         self.health = self.maxhealth
         self.ready = False
+
+    def __draw_image(self):
+        self.image.fill(pygame.color.Color(0, 0, 0, 0))
+        irect = self.image.get_rect()
+        col = Graphics.hue_shift("#EE5400", 100)
+        pygame.draw.rect(self.image, col, (0, 0, irect.width, irect.height), 2)
 
     def draw_force(self, surface, font, x, y):
         txt = font.render("Force: %d" % self.force, True, pygame.color.Color("#FFFFFF"))
@@ -63,17 +69,19 @@ class Player(pygame.sprite.Sprite):
             if Keyboard.down(Constants.GROW_KEY):
                 width = min(self.rect.width + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_WIDTH)
                 height = min(self.rect.height + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_HEIGHT)
-                self.image = pygame.transform.scale(self.original, (width, height)).convert_alpha()
+                self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
                 center = self.rect.center
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center
+                self.__draw_image()
             elif Keyboard.down(Constants.SHRINK_KEY):
                 width = max(Constants.MIN_PLAYER_WIDTH, self.rect.width - Constants.SIZE_INTERVAL)
                 height = max(Constants.MIN_PLAYER_HEIGHT, self.rect.height - Constants.SIZE_INTERVAL)
-                self.image = pygame.transform.scale(self.original, (width, height)).convert_alpha()
+                self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
                 center = self.rect.center
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center
+                self.__draw_image()
             # If not in the center, fall to center of the screen
             if self.rect.centery < Constants.HEIGHT // 4:
                 self.rect.y += math.ceil(Constants.GRAVITY / Constants.FPS * delta)

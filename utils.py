@@ -28,6 +28,14 @@ class Constants:
     WIDTH = 600
 
 
+class Graphics:
+    @staticmethod
+    def hue_shift(color, hueShift):
+        col = color if isinstance(color, pygame.color.Color) else pygame.color.Color(color)
+        col.hsva = ((col.hsva[0] + hueShift) % 360, min(col.hsva[1], 100), min(col.hsva[2], 100), min(col.hsva[3], 255))
+        return col
+
+
 class Resources:
     @staticmethod
     def load_image(name, size=None):

@@ -84,7 +84,7 @@ class Game(object):
             self.player.tick(self.buffer, delta, self.world.platforms)
 
             # If the player is fallen in, close the "hatch" and show distance
-            if self.player.rect.top > 50:
+            if self.player.rect.top >= 50:
                 pygame.draw.rect(self.buffer, pygame.color.Color("#111111"), (0, 0, Constants.WIDTH, 50))
 
                 # Draw distance

@@ -25,15 +25,15 @@ class World:
         self.platforms.add(l)
         self.platforms.add(r)
 
-        dforce = (.75*width)**2 * Constants.GRAVITY
-        bforce = (.5*width)**2 * Constants.GRAVITY
+        dforce = (.6*width)**2 * Constants.GRAVITY
+        bforce = (.4*width)**2 * Constants.GRAVITY
         plat = Platform(int(bforce), int(dforce), width, pygame.Rect(Tile.SIZE + sideWidth, y, width, Tile.SIZE))
         self.platforms.add(plat)
 
     def tick(self, surface, delta):
         if delta > 0:
             self.fallen += self.fallStep
-            self.fallStep += .005
+            self.fallStep += .001
             map(lambda t: t.tick(delta, self.fallStep), self.tiles)
             map(lambda p: p.step(self.fallStep), self.platforms)
             while self.tiles[-1].rect.bottom <= Constants.HEIGHT + Tile.SIZE:
@@ -45,8 +45,8 @@ class World:
 
                 self.tilesUntilPlatform -= 1
                 if self.tilesUntilPlatform == 0:
-                    self.tilesUntilPlatform = randint(50, 70)
-                    threshold = Arithmetic.lerp(100, 175, (self.tilesUntilPlatform - 50.0) / 20.0)
+                    self.tilesUntilPlatform = randint(40, 60)
+                    threshold = Arithmetic.lerp(70, 140, (self.tilesUntilPlatform - 50.0) / 20.0)
                     width = randint(max(20, self.lastPlatformWidth - threshold),
                                     min(self.lastPlatformWidth + threshold, 350))
                     self.generatePlatform(width, col)
