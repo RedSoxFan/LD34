@@ -4,7 +4,7 @@
 import math
 import pygame
 from input import Keyboard
-from utils import Arithmetic, Constants
+from utils import Arithmetic, Constants, Resources
 
 
 class Player(pygame.sprite.Sprite):
@@ -12,10 +12,8 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Initialize the image
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color(0, 0, 255))
-
-        # Get the bounding box
+        self.original = Resources.load_colorized_image("square.xpm", 200)
+        self.image = pygame.transform.scale(self.original.copy(), (50, 50)).convert_alpha()
         self.rect = self.image.get_rect()
 
         # Initialize some physical properties
@@ -43,6 +41,10 @@ class Player(pygame.sprite.Sprite):
         surface.blit(txt, (x, y))
 
     @property
+    def alive(self):
+        return self.health > 0
+
+    @property
     def force(self):
         return self.mass * Constants.GRAVITY
 
@@ -61,14 +63,14 @@ class Player(pygame.sprite.Sprite):
             if Keyboard.down(Constants.GROW_KEY):
                 width = min(self.rect.width + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_WIDTH)
                 height = min(self.rect.height + Constants.SIZE_INTERVAL, Constants.MAX_PLAYER_HEIGHT)
-                self.image = pygame.transform.scale(self.image, (width, height))
+                self.image = pygame.transform.scale(self.original, (width, height)).convert_alpha()
                 center = self.rect.center
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center
             elif Keyboard.down(Constants.SHRINK_KEY):
                 width = max(Constants.MIN_PLAYER_WIDTH, self.rect.width - Constants.SIZE_INTERVAL)
                 height = max(Constants.MIN_PLAYER_HEIGHT, self.rect.height - Constants.SIZE_INTERVAL)
-                self.image = pygame.transform.scale(self.image, (width, height))
+                self.image = pygame.transform.scale(self.original, (width, height)).convert_alpha()
                 center = self.rect.center
                 self.rect.size = self.image.get_rect().size
                 self.rect.center = center

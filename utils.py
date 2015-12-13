@@ -31,7 +31,20 @@ class Constants:
 class Resources:
     @staticmethod
     def load_image(name, size=None):
-        image = pygame.image.load(os.path.join("images", name)).convert()
+        image = pygame.image.load(os.path.join("resources", name)).convert_alpha()
         if size is not None:
-            image = pygame.transform.scale(image, size).convert()
+            image = pygame.transform.scale(image, size).convert_alpha()
+        return image
+
+    @staticmethod
+    def load_colorized_image(name, hueShift, size=None):
+        image = Resources.load_image(name, size=size)
+
+        pxls = pygame.PixelArray(image)
+        for x, y in ((x, y) for x in xrange(image.get_width()) for y in xrange(image.get_height())):
+            col = image.unmap_rgb(pxls[x, y])
+            val = ((col.hsva[0] + hueShift) % 360, min(col.hsva[1], 100), min(col.hsva[2], 100), min(col.hsva[3], 255))
+            col.hsva = val
+            pxls[x, y] = col
+
         return image

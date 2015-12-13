@@ -86,7 +86,7 @@ class Game(object):
         # Tick the correct game screen
         if self.gamescreen == Constants.GAME_SCREEN:
             # Tick the world
-            self.world.tick(self.buffer, delta if self.player.ready else 0)
+            self.world.tick(self.buffer, delta if (self.player.ready and self.player.alive) else 0)
 
             # Tick the objects
             self.player.tick(self.buffer, delta, self.world.platforms)
