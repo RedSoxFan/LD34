@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pygame
+from audio import Sound
 from input import Mouse, Keyboard
 from utils import Constants
 
@@ -66,7 +67,7 @@ class Credits(Screen):
 
         # Paint the sections
         yoff = -100
-        for section in ("Kareemroks101\nProgrammer and Special Effects", "RedSoxFan\nProgrammer",
+        for section in ("krx\nProgrammer and Special Effects", "RedSoxFan\nProgrammer",
                         "Spetsnaz\nGame Idea", "s.a.x Software\nSaxMono Font"):
             for i, text in enumerate(section.split("\n")):
                 ttype = "msgtitle" if i == 0 else "msgbody"
@@ -85,6 +86,7 @@ class Credits(Screen):
 
         # Check to see if enter is pressed
         if Keyboard.released(pygame.K_RETURN):
+            Sound.play('menuselect')
             scr = MainMenu
 
         return scr
@@ -152,6 +154,7 @@ class Info(Screen):
 
         # Check to see if enter is pressed
         if Keyboard.released(pygame.K_RETURN):
+            Sound.play('menuselect')
             scr = MainMenu
 
         return scr
@@ -199,15 +202,19 @@ class MainMenu(Screen):
         if len(MainMenu.options) > 0:
             if Keyboard.released(pygame.K_DOWN):
                 # If not at bottom, move the selection down
+                Sound.play('menumove')
                 self.sel = min(self.sel + 1, len(MainMenu.options) - 1)
             elif Keyboard.released(pygame.K_UP):
                 # If not at top, move the selection up
+                Sound.play('menumove')
                 self.sel = max(0, self.sel - 1)
             elif Keyboard.released(pygame.K_RETURN):
                 # Select the highlighted option
+                Sound.play('menuselect')
                 scr = MainMenu.screens[self.sel]
             elif msel >= 0 and Mouse.leftReleased():
                 # Select the option that mouse is hovering over
+                Sound.play('menuselect')
                 scr = MainMenu.screens[msel]
 
         return scr

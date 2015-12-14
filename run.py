@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pygame
+
 from pygame.color import Color
-from pygame.rect import Rect
-import sys
+
+import screens
+from audio import Sound
 from input import *
 from player import Player
+from utils import Constants
 from world import World
-from platform import Platform, UnbreakablePlatform
-import screens
-from utils import Constants, Resources
 
 try:
     import pygame._view
@@ -24,6 +23,7 @@ class Game(object):
         # Initialize
         pygame.init()
         Keyboard.init()
+        Sound.init()
 
         # Center window
         info = pygame.display.Info()

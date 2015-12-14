@@ -1,15 +1,15 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
 
-import math
-import pygame
-from input import Keyboard
-from messages import Message
-from utils import Arithmetic, Constants, Graphics
 from math import *
 from random import *
+from audio import Sound
+
+from input import Keyboard
+from messages import Message
 from particles import *
 from tile import Tile
+from utils import Graphics
 
 
 class Player(pygame.sprite.Sprite):
@@ -164,7 +164,7 @@ class Player(pygame.sprite.Sprite):
                 self.__draw_image()
             # If not in the center, fall to center of the screen
             if self.rect.centery < Constants.HEIGHT // 4:
-                self.rect.y += math.ceil(Constants.GRAVITY / Constants.FPS * delta)
+                self.rect.y += ceil(Constants.GRAVITY / Constants.FPS * delta)
                 self.rect.y = min(Constants.HEIGHT // 4, self.rect.y)
             else:
                 self.ready = True
@@ -175,16 +175,19 @@ class Player(pygame.sprite.Sprite):
                     self.health = 0
                     break
                 elif p.can_splinter(self.force):
+                    Sound.play('hit{}'.format(randint(1, 3)))
                     self.health = max(0, self.health - p.damage)
                     self.destroyPlatform(p, True)
                     p.kill()
                     msgs.append(Message("Splinter\n-%d" % p.damage, self.rect.right + 100, self.rect.centery, "bad"))
                 else:
+                    Sound.play('hit{}'.format(randint(1, 3)))
                     self.destroyPlatform(p, False)
                     p.kill()
         else:
             # Death sequence
             if self.rect.width > 2:
+                # Shrink until tiny
                 width = Arithmetic.clamp(2, Constants.MAX_PLAYER_WIDTH, self.rect.width - 3 * Constants.SIZE_INTERVAL)
                 height = Arithmetic.clamp(2, Constants.MAX_PLAYER_HEIGHT, self.rect.height - 3 * Constants.SIZE_INTERVAL)
                 self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
@@ -193,15 +196,21 @@ class Player(pygame.sprite.Sprite):
                 self.rect.center = center
                 self.__draw_image()
             elif not self.sploded:
+                # splode
+                Sound.play('explode')
                 self.sploded = True
                 self.innerfire = False
                 self.image.fill(pygame.Color(0, 0, 0))
+
+                # Line particles
                 for i in xrange(randint(20, 40)):
                     angle = random() * 2.0 * pi
                     speed = random() * 5.0 + 2.5
                     rotRate = random() * (0.5 * pi) - (0.25 * pi)
                     size = randint(3, 17)
                     self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
+
+                # Fire particles
                 for i in xrange(randint(200, 500)):
                     angle = random() * 2.0 * pi
                     speed = random() * 5.0 + 1.0
