@@ -9,6 +9,7 @@ from utils import Arithmetic, Constants, Graphics
 from math import *
 from random import *
 from particles import *
+from tile import Tile
 
 
 class Player(pygame.sprite.Sprite):
@@ -85,6 +86,16 @@ class Player(pygame.sprite.Sprite):
             speed = random() * 4.0 + 1.0
             self.particles.append(FadingParticle([x, y], randint(1, 3), [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 5))
 
+    def destroyPlatform(self, plat, splinter):
+        y = plat.rect.centery
+        for x in range(plat.rect.left + Tile.SIZE // 2, plat.rect.right, Tile.SIZE):
+            for i in range(4):
+                speed = random() * 5.0 + 5.0
+                angle = random() * (0.5 * pi) + (0.25 * pi)  # Math seems wrong, but it works...k
+                rotRate = random() * (0.5 * pi) - (0.25 * pi)
+                size = randint(3, 17 if splinter else 7)
+                self.particles.append(FlippyLineParticle([x, y], size, [speed * cos(angle), speed * sin(angle)], plat.col, random() * 2.0 * pi, rotRate))
+
     def tick(self, surface, delta, platforms):
         msgs = []
         if self.disphealth > self.health:
@@ -123,9 +134,11 @@ class Player(pygame.sprite.Sprite):
                     break
                 elif p.can_splinter(self.force):
                     self.health = max(0, self.health - p.damage)
+                    self.destroyPlatform(p, True)
                     p.kill()
                     msgs.append(Message("Splinter\n-%d" % p.damage, self.rect.right + 100, self.rect.centery, "bad"))
                 else:
+                    self.destroyPlatform(p, False)
                     p.kill()
         else:
             # Death sequence
@@ -144,7 +157,8 @@ class Player(pygame.sprite.Sprite):
                     angle = random() * 2.0 * pi
                     speed = random() * 5.0 + 3.0
                     rotRate = random() * (0.5 * pi) - (0.25 * pi)
-                    self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], randint(3, 13), [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
+                    size = randint(3, 17)
+                    self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
         # If on screen, paint
         if self.rect.bottom > 0:
             surface.blit(self.image, (self.rect.x, self.rect.y))

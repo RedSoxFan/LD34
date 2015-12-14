@@ -14,6 +14,7 @@ class Platform(pygame.sprite.Sprite):
         # Initialize the image
         self.hshift = hueShift
         self.image = pygame.Surface(bounds.size, pygame.SRCALPHA)
+        self.col = None
         self._draw_image()
 
         # Get the bounding box
@@ -28,7 +29,7 @@ class Platform(pygame.sprite.Sprite):
     def _draw_image(self):
         self.image.fill(pygame.color.Color(0, 0, 0, 0))
         irect = self.image.get_rect()
-        col = Graphics.hue_shift("#EE5400", self.hshift)
+        self.col = col = Graphics.hue_shift("#EE5400", self.hshift)
         for y in xrange(0, self.image.get_rect().height, Tile.SIZE):
             for x in xrange(0, self.image.get_rect().width, Tile.SIZE):
                 points = ((x + Tile.SIZE // 2, y),  # Top
