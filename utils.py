@@ -47,7 +47,7 @@ class Graphics:
 class Resources:
     @staticmethod
     def load_image(name, size=None):
-        image = pygame.image.load(os.path.join("resources", name)).convert_alpha()
+        image = pygame.image.load(name).convert_alpha()
         if size is not None:
             image = pygame.transform.scale(image, size).convert_alpha()
         return image

@@ -3,6 +3,7 @@
 
 import os
 import pygame
+import pygame._view
 from pygame.color import Color
 from pygame.rect import Rect
 import sys
@@ -18,7 +19,6 @@ class Game(object):
     def __init__(self):
         # Initialize
         pygame.init()
-        pygame.font.init()
         Keyboard.init()
 
         # Center window
@@ -28,9 +28,9 @@ class Game(object):
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (cx, cy)
 
         # Create window and buffer
-        pygame.display.set_caption(Constants.TITLE)
         self.screen = pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT))
         self.buffer = pygame.surface.Surface((Constants.WIDTH, Constants.HEIGHT), pygame.SRCALPHA)
+        pygame.display.set_caption(Constants.TITLE)
 
         # Create variables objects. These will be populated in reset
         self.player = None
@@ -38,12 +38,12 @@ class Game(object):
         self.messages = []
 
         # Initialize font map
-        self.fontmap = {"hud": pygame.font.SysFont("monospace", 14),
-                        "title": pygame.font.SysFont("monospace", 48),
-                        "option": pygame.font.SysFont("monospace", 28),
-                        "score": pygame.font.SysFont("monospace", 28),
-                        "msgtitle": pygame.font.SysFont("monospace", 24),
-                        "msgbody": pygame.font.SysFont("monospace", 22)}
+        self.fontmap = {"hud": pygame.font.Font("saxmono.ttf", 14),
+                        "title": pygame.font.Font("saxmono.ttf", 48),
+                        "option": pygame.font.Font("saxmono.ttf", 28),
+                        "score": pygame.font.Font("saxmono.ttf", 28),
+                        "msgtitle": pygame.font.Font("saxmono.ttf", 24),
+                        "msgbody": pygame.font.Font("saxmono.ttf", 22)}
 
         # Initialize main menu
         screens.MainMenu.register_option("Play", Constants.GAME_SCREEN)
