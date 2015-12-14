@@ -6,7 +6,6 @@ import pygame
 from pygame.color import Color
 from pygame.rect import Rect
 import sys
-
 from input import *
 from player import Player
 from world import World
@@ -129,7 +128,7 @@ class Game(object):
             self.buffer.blit(surf, (Constants.WIDTH - w - 5, Constants.HEIGHT - 18))
 
             # If dead, send to game over screen
-            if self.player.health == 0:
+            if self.player.disphealth == 0:
                 self.gamescreen = screens.GameOver((self.world.fallen // 100) / 10.0)
 
         elif self.gamescreen == Constants.EXIT_SCREEN:

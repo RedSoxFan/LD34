@@ -3,7 +3,6 @@
 
 import pygame
 import sys
-
 from utils import Graphics
 from tile import Tile
 
