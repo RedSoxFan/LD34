@@ -155,10 +155,16 @@ class Player(pygame.sprite.Sprite):
                 self.image.fill(pygame.Color(0, 0, 0))
                 for i in xrange(randint(20, 40)):
                     angle = random() * 2.0 * pi
-                    speed = random() * 5.0 + 3.0
+                    speed = random() * 5.0 + 2.5
                     rotRate = random() * (0.5 * pi) - (0.25 * pi)
                     size = randint(3, 17)
                     self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
+                for i in xrange(randint(200, 500)):
+                    angle = random() * 2.0 * pi
+                    speed = random() * 5.0 + 1.0
+                    size = randint(1, 3)
+                    self.particles.append(FadingParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 6))
+
         # If on screen, paint
         if self.rect.bottom > 0:
             surface.blit(self.image, (self.rect.x, self.rect.y))
