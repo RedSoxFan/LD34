@@ -71,10 +71,10 @@ class BuildExe:
         self.icon_file = None
  
         #Extra files/dirs copied to game
-        self.extra_datas = ['saxmono.ttf']
+        self.extra_datas = ['saxmono.ttf', 'snd']
  
         #Extra/excludes python modules
-        self.extra_modules = ["input", "messages", "particles", "platform",
+        self.extra_modules = ["input", "messages", "particles", "platform", "audio",
                               "player", "screens", "tile", "utils", "world", "pygame.font"]
         self.exclude_modules = []
         
