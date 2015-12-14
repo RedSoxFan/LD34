@@ -1,5 +1,6 @@
 import pygame
 from utils import Arithmetic, Constants
+from math import *
 
 
 class Particle(object):
@@ -33,3 +34,19 @@ class FadingParticle(Particle):
 
     def dead(self):
         return Particle.dead(self) or self.alpha <= 0
+
+
+class FlippyLineParticle(Particle):
+    def __init__(self, pos, size, vel, col, rot, rotRate):
+        Particle.__init__(self, pos, size, vel, col)
+        self.rot = rot
+        self.rotRate = rotRate
+
+    def tick(self):
+        Particle.tick(self)
+        self.rot += self.rotRate
+
+    def draw(self, surface):
+        sx, ex = int(round(self.pos[0] - self.size * cos(self.rot))), int(round(self.pos[0] + self.size * cos(self.rot)))
+        sy, ey = int(round(self.pos[1] - self.size * sin(self.rot))), int(round(self.pos[1] + self.size * sin(self.rot)))
+        pygame.draw.line(surface, self.col, (sx, sy), (ex, ey))

@@ -29,6 +29,7 @@ class Player(pygame.sprite.Sprite):
 
         # Player related effects
         self.particles = []
+        self.sploded = False
 
     def __draw_image(self):
         self.image.fill(pygame.color.Color(0, 0, 0, 0))
@@ -126,6 +127,24 @@ class Player(pygame.sprite.Sprite):
                     msgs.append(Message("Splinter\n-%d" % p.damage, self.rect.right + 100, self.rect.centery, "bad"))
                 else:
                     p.kill()
+        else:
+            # Death sequence
+            if self.rect.width > 2:
+                width = Arithmetic.clamp(2, Constants.MAX_PLAYER_WIDTH, self.rect.width - 3 * Constants.SIZE_INTERVAL)
+                height = Arithmetic.clamp(2, Constants.MAX_PLAYER_HEIGHT, self.rect.height - 3 * Constants.SIZE_INTERVAL)
+                self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
+                center = self.rect.center
+                self.rect.size = self.image.get_rect().size
+                self.rect.center = center
+                self.__draw_image()
+            elif not self.sploded:
+                self.sploded = True
+                self.image.fill(pygame.Color(0, 0, 0))
+                for i in xrange(randint(20, 40)):
+                    angle = random() * 2.0 * pi
+                    speed = random() * 5.0 + 3.0
+                    rotRate = random() * (0.5 * pi) - (0.25 * pi)
+                    self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], randint(3, 13), [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
         # If on screen, paint
         if self.rect.bottom > 0:
             surface.blit(self.image, (self.rect.x, self.rect.y))
