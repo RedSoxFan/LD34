@@ -80,7 +80,7 @@ class MainMenu(Screen):
             (w, h) = fontmap["option"].size(option)
             (x, y) = (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT // 2 + i * h * 2)
             # Determine if the option is highlighted or if the mouse is hovering over it
-            m = Mouse.getX() in xrange(x, x+w) and Mouse.getY() in xrange(y, y+h)
+            m = Mouse.getX() in xrange(x, x + w) and Mouse.getY() in xrange(y, y + h)
             msel = i if m else msel
             s = self.sel == i or m
             # Paint the option

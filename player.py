@@ -6,6 +6,9 @@ import pygame
 from input import Keyboard
 from messages import Message
 from utils import Arithmetic, Constants, Graphics
+from math import *
+from random import *
+from particles import *
 
 
 class Player(pygame.sprite.Sprite):
@@ -21,7 +24,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = Constants.WIDTH // 2 - self.rect.width // 2
         self.rect.y = -50
         self.health = self.maxhealth
+        self.disphealth = self.health
         self.ready = False
+
+        # Player related effects
+        self.particles = []
 
     def __draw_image(self):
         self.image.fill(pygame.color.Color(0, 0, 0, 0))
@@ -34,14 +41,21 @@ class Player(pygame.sprite.Sprite):
         surface.blit(txt, (x, y))
 
     def draw_health(self, surface, font, x, y):
-        txt = font.render("Health: %d / %d" % (self.health, self.maxhealth), True, pygame.color.Color("#FFFFFF"))
+        txt = font.render("Health: %d / %d" % (self.disphealth, self.maxhealth), True, pygame.color.Color("#FFFFFF"))
         surface.blit(txt, (x, y))
 
     def draw_healthbar(self, surface, x, y, width, height):
         pygame.draw.rect(surface, pygame.color.Color(0, 255, 0), (x, y, width, height))
-        hw = Arithmetic.lerp(0, width - 2, 1 - self.health / self.maxhealth)
+        hw = Arithmetic.lerp(0, width - 2, 1 - self.disphealth / self.maxhealth)
         if hw > 0:
             pygame.draw.rect(surface, pygame.color.Color(255, 0, 0), (x + 1, y + 1, hw, height - 2))
+
+        if self.disphealth > self.health:
+            self.sprayHealthParticles(x + hw, y, y + height)
+
+        map(lambda par: par.tick(), self.particles)
+        self.particles = [p for p in self.particles if not p.dead()]
+        map(lambda par: par.draw(surface), self.particles)
 
     def draw_mass(self, surface, font, x, y):
         txt = font.render("Mass: %d" % self.mass, True, pygame.color.Color("#FFFFFF"))
@@ -63,8 +77,18 @@ class Player(pygame.sprite.Sprite):
     def maxhealth(self):
         return 5000.0
 
+    def sprayHealthParticles(self, x, ymin, ymax):
+        for i in xrange(randint(10, 20)):
+            y = randint(ymin, ymax)
+            angle = Arithmetic.lerpf(5.0 / 6.0 * pi, 7.0 / 6.0 * pi, random())
+            speed = random() * 4.0 + 1.0
+            self.particles.append(FadingParticle([x, y], randint(1, 3), [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 5))
+
     def tick(self, surface, delta, platforms):
         msgs = []
+        if self.disphealth > self.health:
+            self.disphealth = Arithmetic.clamp(self.health, self.maxhealth, self.disphealth - ceil((self.disphealth - self.health) / 30.0))
+
         # If alive, tick
         if self.health > 0:
             # Check for a resize
@@ -95,6 +119,7 @@ class Player(pygame.sprite.Sprite):
                 if not p.can_break(self.force):
                     msgs.append(Message("Splat\n-%d" % self.health, self.rect.right + 100, self.rect.centery, "bad"))
                     self.health = 0
+                    break
                 elif p.can_splinter(self.force):
                     self.health = max(0, self.health - p.damage)
                     p.kill()

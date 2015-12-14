@@ -10,6 +10,14 @@ class Arithmetic:
     def lerp(val1, val2, percent):
         return round(val1 + (val2 - val1) * percent)
 
+    @staticmethod
+    def lerpf(val1, val2, percent):
+        return val1 + (val2 - val1) * percent
+
+    @staticmethod
+    def clamp(vmin, vmax, val):
+        return min(vmax, max(val, vmin))
+
 
 class Constants:
     EXIT_SCREEN = 0
