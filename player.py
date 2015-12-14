@@ -133,7 +133,8 @@ class Player(pygame.sprite.Sprite):
             angle = atan2(pos[1] - self.rect.centery, pos[0] - self.rect.centerx) + pi
             speed = random() * 2.0 + 1.0
             size = randint(1, 3)
-            self.particles.append(FadingParticle(pos, size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 255 * 10.0 / self.rect.width))
+            col = pygame.Color(0, 255, 0)
+            self.particles.append(FadingParticle(pos, size, [speed * cos(angle), speed * sin(angle)], col, 255 * 10.0 / self.rect.width))
 
     def tick(self, surface, delta, platforms):
         msgs = []

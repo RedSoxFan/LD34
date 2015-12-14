@@ -69,7 +69,7 @@ class Credits(Screen):
         yoff = -200
         for section in ("krx\nProgrammer and Special Effects", "RedSoxFan\nProgrammer",
                         "Spetsnaz\nGame Idea", "s.a.x Software\nSaxMono Font", "Game Made In\nPython with pygame",
-                        "Music Made In\nBFXR + LabChirp", "EXE Creation\npy2exe with pygame2exe script"):
+                        "Sound Effects Made In\nBFXR + LabChirp", "Music By\nSiriusBeat", "EXE Creation\npy2exe with pygame2exe script"):
             for i, text in enumerate(section.split("\n")):
                 ttype = "msgtitle" if i == 0 else "msgbody"
                 col = pygame.color.Color("#CCCCCC" if ttype == "msgtitle" else "#888888")
@@ -77,7 +77,7 @@ class Credits(Screen):
                 (w, h) = fontmap[ttype].size(text)
                 surface.blit(sc, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT // 2 - h // 2 + yoff))
                 yoff += h + 2
-            yoff += 25
+            yoff += 15
 
         # Paint the return to main menu message
         txt = "Press <enter> to return to the Main Menu"
@@ -165,13 +165,13 @@ class SettingsScreen(Screen):
     def __init__(self):
         Screen.__init__(self)
         self.sel = (0, 0)
-        self.options = {"AUDIO": (("Play", lambda: Settings.AUDIO == 1, lambda: setattr(Settings, "AUDIO", 1)),
+        self.options = {"AUDIO": (("Play", lambda: Settings.AUDIO == 1, lambda: setattr(Settings, "AUDIO", 1) or Sound.cycleMusic()),
                                   ("Mute", lambda: Settings.AUDIO == 0,
                                    lambda: setattr(Settings, "AUDIO", 0) or Sound.stop_all(False))),
                         "GRAPHICS": (("High", lambda: Settings.GRAPHICS == 2, lambda: setattr(Settings, "GRAPHICS", 2)),
                                      ("Medium", lambda: Settings.GRAPHICS == 1, lambda: setattr(Settings, "GRAPHICS", 1)),
                                      ("Low", lambda: Settings.GRAPHICS == 0, lambda: setattr(Settings, "GRAPHICS", 0))),
-                        "~": (("Return to Main Menu", lambda: False, lambda: MainMenu), )}
+                        "~": (("Return to Main Menu", lambda: False, lambda: MainMenu),)}
 
     def tick(self, surface, delta, fontmap):
         scr = None
@@ -240,6 +240,7 @@ class SettingsScreen(Screen):
                 Sound.play('menuselect')
 
         return scr
+
 
 class MainMenu(Screen):
     options = []

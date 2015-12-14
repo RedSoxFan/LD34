@@ -6,7 +6,7 @@ import os
 from pygame.color import Color
 
 import screens
-from audio import Sound
+from audio import *
 from input import *
 from player import Player
 from utils import Constants
@@ -24,6 +24,7 @@ class Game(object):
         pygame.init()
         Keyboard.init()
         Sound.init()
+        Sound.cycleMusic()
 
         # Center window
         info = pygame.display.Info()
@@ -68,6 +69,8 @@ class Game(object):
     def event(self, e):
         if e.type == pygame.QUIT:
             self.running = False
+        elif e.type == SONG_END:
+            Sound.cycleMusic()
 
     def reset(self):
         # Create the player
