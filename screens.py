@@ -49,6 +49,114 @@ class GameOver(Screen):
         return scr
 
 
+class Credits(Screen):
+    def __init__(self):
+        Screen.__init__(self)
+
+    def tick(self, surface, delta, fontmap):
+        scr = None
+
+        # Paint the background
+        surface.fill(pygame.color.Color("#222222"))
+
+        # Paint title
+        go = fontmap["title"].render("Credits", True, pygame.color.Color("#FFFFFF"))
+        (w, h) = fontmap["title"].size("Credits")
+        surface.blit(go, (Constants.WIDTH // 2 - w // 2, 100))
+
+        # Paint the sections
+        yoff = -100
+        for section in ("Kareemroks101\nProgrammer and Special Effects", "RedSoxFan\nProgrammer",
+                        "Spetsnaz\nGame Idea", "s.a.x Software\nSaxMono Font"):
+            for i, text in enumerate(section.split("\n")):
+                ttype = "msgtitle" if i == 0 else "msgbody"
+                col = pygame.color.Color("#CCCCCC" if ttype == "msgtitle" else "#888888")
+                sc = fontmap[ttype].render(text, True, col)
+                (w, h) = fontmap[ttype].size(text)
+                surface.blit(sc, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT // 2 - h // 2 + yoff))
+                yoff += h + 2
+            yoff += 50
+
+        # Paint the return to main menu message
+        txt = "Press <enter> to return to the Main Menu"
+        msg = fontmap["hud"].render(txt, True, pygame.color.Color("#999999"))
+        (w, h) = fontmap["hud"].size(txt)
+        surface.blit(msg, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT - h - 10))
+
+        # Check to see if enter is pressed
+        if Keyboard.released(pygame.K_RETURN):
+            scr = MainMenu
+
+        return scr
+
+
+class Info(Screen):
+    def __init__(self):
+        Screen.__init__(self)
+
+    def tick(self, surface, delta, fontmap):
+        scr = None
+
+        # Paint the background
+        surface.fill(pygame.color.Color("#222222"))
+
+        # Paint title
+        go = fontmap["title"].render("Info", True, pygame.color.Color("#FFFFFF"))
+        (w, h) = fontmap["title"].size("Info")
+        surface.blit(go, (Constants.WIDTH // 2 - w // 2, 100))
+
+        # Paint the sections
+        yoff = 200
+        for section in ("Objective\nTo get as far down the abyss as possible",
+                        "Controls\nUp Arrow - Grow\nDown Arrow - Shrink",
+                        "How To Play\n[Grow or shrink the player to either reduce or increase force. You "
+                        "will need to have enough force to break the platform (40% of the width). If you "
+                        "don't, you will splat and die. Also, if you have enough force to break the "
+                        "platform, but not cleanly (60% of the width), you will cause the platform "
+                        "to splinter, which will damage you.]"):
+            for i, text in enumerate(section.split("\n")):
+                ttype = "msgtitle" if i == 0 else "msgbody"
+                col = pygame.color.Color("#CCCCCC" if ttype == "msgtitle" else "#888888")
+                if text.startswith("[") and text.endswith("]"):
+                    words = text[1:-1].split(" ")
+                    text = ""
+                    while len(words) > 0:
+                        (w, h) = fontmap[ttype].size("%s %s" % (text, words[0]))
+                        if w < Constants.WIDTH - 20:
+                            text = "%s %s" % (text, words[0])
+                            words = words[1:]
+                        else:
+                            sc = fontmap[ttype].render(text, True, col)
+                            (w, h) = fontmap[ttype].size(text)
+                            surface.blit(sc, (Constants.WIDTH // 2 - w // 2, yoff))
+                            yoff += h + 2
+                            text = ""
+                    if len(text) > 0:
+                        sc = fontmap[ttype].render(text, True, col)
+                        (w, h) = fontmap[ttype].size(text)
+                        surface.blit(sc, (Constants.WIDTH // 2 - w // 2, yoff))
+                        yoff += h + 2
+                else:
+                    # Line
+                    sc = fontmap[ttype].render(text, True, col)
+                    (w, h) = fontmap[ttype].size(text)
+                    surface.blit(sc, (Constants.WIDTH // 2 - w // 2, yoff))
+                    yoff += h + 2
+            yoff += 20
+
+        # Paint the return to main menu message
+        txt = "Press <enter> to return to the Main Menu"
+        msg = fontmap["hud"].render(txt, True, pygame.color.Color("#999999"))
+        (w, h) = fontmap["hud"].size(txt)
+        surface.blit(msg, (Constants.WIDTH // 2 - w // 2, Constants.HEIGHT - h - 10))
+
+        # Check to see if enter is pressed
+        if Keyboard.released(pygame.K_RETURN):
+            scr = MainMenu
+
+        return scr
+
+
 class MainMenu(Screen):
     options = []
     screens = []

@@ -46,11 +46,13 @@ class Game(object):
                         "title": pygame.font.Font("saxmono.ttf", 48),
                         "option": pygame.font.Font("saxmono.ttf", 28),
                         "score": pygame.font.Font("saxmono.ttf", 28),
-                        "msgtitle": pygame.font.Font("saxmono.ttf", 24),
+                        "msgtitle": pygame.font.Font("saxmono.ttf", 26),
                         "msgbody": pygame.font.Font("saxmono.ttf", 22)}
 
         # Initialize main menu
         screens.MainMenu.register_option("Play", Constants.GAME_SCREEN)
+        screens.MainMenu.register_option("Info", screens.Info)
+        screens.MainMenu.register_option("Credits", screens.Credits)
         screens.MainMenu.register_option("Exit", Constants.EXIT_SCREEN)
 
         # Game Loop
