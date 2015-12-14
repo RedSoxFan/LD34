@@ -13,7 +13,6 @@ class World:
         self.hueStep = 3
         self.tilesUntilPlatform = 20
         self.lastPlatformWidth = 50
-        # self.tiles = [Tile(x, y) for x in [0, Constants.WIDTH - Tile.SIZE] for y in xrange(0, Constants.HEIGHT, Tile.SIZE)]
         self.tiles = []
         self.platforms = pygame.sprite.Group()
 
@@ -24,6 +23,8 @@ class World:
         sideWidth = (Constants.WIDTH - 2 * Tile.SIZE - width) // 2
 
         l = UnbreakablePlatform(pygame.Rect(Tile.SIZE, y, sideWidth, Tile.SIZE), hueShift=self.hueShift)
+        l.image = pygame.transform.flip(l.image, True, False)  # Horizontal flip to keep bad side against wall
+
         r = UnbreakablePlatform(pygame.Rect(Tile.SIZE + sideWidth + width, y, sideWidth, Tile.SIZE), hueShift=self.hueShift)
         self.platforms.add(l)
         self.platforms.add(r)

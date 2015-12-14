@@ -31,12 +31,20 @@ class Player(pygame.sprite.Sprite):
         # Player related effects
         self.particles = []
         self.sploded = False
+        self.innerfire = True
 
     def __draw_image(self):
         self.image.fill(pygame.color.Color(0, 0, 0, 0))
         irect = self.image.get_rect()
         col = Graphics.hue_shift("#EE5400", 100)
-        pygame.draw.rect(self.image, col, (0, 0, irect.width, irect.height), 2)
+        ashift = 255.0 / (irect.width * 0.125)
+        a = col.a
+        i = 0
+        while a > 0:
+            pygame.draw.rect(self.image, col, (i, i, irect.width - 2 * i, irect.height - 2 * i), 2)
+            i += 1
+            a = Arithmetic.clamp(0, 255, a - ashift)
+            col.a = int(a)
 
     def draw_force(self, surface, font, x, y):
         txt = font.render("Force: %d" % self.force, True, pygame.color.Color("#FFFFFF"))
@@ -91,15 +99,51 @@ class Player(pygame.sprite.Sprite):
         for x in range(plat.rect.left + Tile.SIZE // 2, plat.rect.right, Tile.SIZE):
             for i in range(4):
                 speed = random() * 5.0 + 5.0
-                angle = random() * (0.5 * pi) + (0.25 * pi)  # Math seems wrong, but it works...k
+                angle = Arithmetic.lerpf(1.25 * pi, 1.75 * pi, random())
                 rotRate = random() * (0.5 * pi) - (0.25 * pi)
                 size = randint(3, 17 if splinter else 7)
-                self.particles.append(FlippyLineParticle([x, y], size, [speed * cos(angle), speed * sin(angle)], plat.col, random() * 2.0 * pi, rotRate))
+                self.particles.append(FlippyLineParticle([x, y], size, [speed * cos(angle), -speed * sin(angle)], plat.col, random() * 2.0 * pi, rotRate))
+
+    def generateInnerFire(self):
+        # Spawn a bunch of inner particles
+        for i in xrange(randint(25, 50)):
+            side = randint(0, 3)  # pick a side
+            # a and b will become x and y of the particle
+            a = bmin = bmax = angle = 0
+            off = 2
+            if side == 0:  # top side
+                a, bmin, bmax = self.rect.top + off, self.rect.left + off, self.rect.right - off
+                angle = 0.5 * pi
+            elif side == 1:  # right side
+                a, bmin, bmax = self.rect.right - off, self.rect.top + off, self.rect.bottom - off
+                angle = pi
+            elif side == 2:  # bottom side
+                a, bmin, bmax = self.rect.bottom - off, self.rect.left + off, self.rect.right - off
+                angle = 1.5 * pi
+            elif side == 3:  # left side
+                a, bmin, bmax = self.rect.left + off, self.rect.top + off, self.rect.bottom - off
+                angle = 0
+
+            # At really small sizes (aka death sequence), these might switch
+            if bmin > bmax:
+                bmin, bmax = bmax, bmin
+
+            b = randint(bmin, bmax)
+
+            # a and b may need to be swapped depending on the side of the square
+            pos = [a, b] if side % 2 != 0 else [b, a]
+
+            speed = random() * 2.0 + 1.0
+            size = randint(1, 3)
+            self.particles.append(FadingParticle(pos, size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 255 * 10.0 / self.rect.width))
 
     def tick(self, surface, delta, platforms):
         msgs = []
         if self.disphealth > self.health:
             self.disphealth = Arithmetic.clamp(self.health, self.maxhealth, self.disphealth - ceil((self.disphealth - self.health) / 30.0))
+
+        if self.innerfire:
+            self.generateInnerFire()
 
         # If alive, tick
         if self.health > 0:
@@ -152,6 +196,7 @@ class Player(pygame.sprite.Sprite):
                 self.__draw_image()
             elif not self.sploded:
                 self.sploded = True
+                self.innerfire = False
                 self.image.fill(pygame.Color(0, 0, 0))
                 for i in xrange(randint(20, 40)):
                     angle = random() * 2.0 * pi
