@@ -109,20 +109,16 @@ class Player(pygame.sprite.Sprite):
         for i in xrange(randint(25, 50)):
             side = randint(0, 3)  # pick a side
             # a and b will become x and y of the particle
-            a = bmin = bmax = angle = 0
+            a = bmin = bmax = 0
             off = 2
             if side == 0:  # top side
                 a, bmin, bmax = self.rect.top + off, self.rect.left + off, self.rect.right - off
-                angle = 0.5 * pi
             elif side == 1:  # right side
                 a, bmin, bmax = self.rect.right - off, self.rect.top + off, self.rect.bottom - off
-                angle = pi
             elif side == 2:  # bottom side
                 a, bmin, bmax = self.rect.bottom - off, self.rect.left + off, self.rect.right - off
-                angle = 1.5 * pi
             elif side == 3:  # left side
                 a, bmin, bmax = self.rect.left + off, self.rect.top + off, self.rect.bottom - off
-                angle = 0
 
             # At really small sizes (aka death sequence), these might switch
             if bmin > bmax:
@@ -133,6 +129,8 @@ class Player(pygame.sprite.Sprite):
             # a and b may need to be swapped depending on the side of the square
             pos = [a, b] if side % 2 != 0 else [b, a]
 
+            # Direct the fire toward the center of the square
+            angle = atan2(pos[1] - self.rect.centery, pos[0] - self.rect.centerx) + pi
             speed = random() * 2.0 + 1.0
             size = randint(1, 3)
             self.particles.append(FadingParticle(pos, size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 255 * 10.0 / self.rect.width))
