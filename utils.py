@@ -67,3 +67,8 @@ class Resources:
             image.fill(col, None, pygame.BLEND_RGBA_ADD)
 
         return image
+
+
+class Settings:
+    AUDIO = 1  # 1 = audio / 0 = mute
+    GRAPHICS = 2  # 2 = high / 1 = medium / 0 = low

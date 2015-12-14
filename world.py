@@ -1,7 +1,7 @@
 import pygame
 from tile import Tile
 from platform import *
-from utils import Arithmetic, Constants
+from utils import Arithmetic, Constants, Settings
 from random import randint
 
 
@@ -64,5 +64,10 @@ class World:
             for plat in self.platforms:
                 if plat.rect.bottom < 0:
                     self.platforms.remove(plat)
+        if Settings.GRAPHICS >= 1:
+            off = int(self.fallen % Constants.WIDTH)
+            for y in xrange(50 - off, Constants.HEIGHT + 150, 25):
+                if 0 < y < (Constants.HEIGHT + 150):
+                    pygame.draw.line(surface, pygame.color.Color("#111111"), (0, y), (Constants.WIDTH, y - 150))
         map(lambda t: t.draw(surface), self.tiles)
         map(lambda t: t.tick(surface, delta), self.platforms)

@@ -1,14 +1,15 @@
 import pygame
-from utils import Arithmetic, Constants
+from utils import Arithmetic, Constants, Settings
 from math import *
 
 
 class Particle(object):
-    def __init__(self, pos, size, vel, col):
+    def __init__(self, pos, size, vel, col, mingfx=2):
         self.pos = pos
         self.size = size
         self.vel = vel
         self.col = col
+        self.minfx = mingfx
 
     def draw(self, surface):
         pygame.draw.circle(surface, self.col, [int(round(self.pos[0])), int(round(self.pos[1]))], self.size)
@@ -18,12 +19,13 @@ class Particle(object):
         self.pos[1] += self.vel[1]
 
     def dead(self):
-        return not (0 <= self.pos[0] <= Constants.WIDTH and 0 <= self.pos[1] <= Constants.HEIGHT)
+        return Settings.GRAPHICS < self.minfx or \
+            not(0 <= self.pos[0] <= Constants.WIDTH and 0 <= self.pos[1] <= Constants.HEIGHT)
 
 
 class FadingParticle(Particle):
-    def __init__(self, pos, size, vel, col, fade):
-        Particle.__init__(self, pos, size, vel, col)
+    def __init__(self, pos, size, vel, col, fade, mingfx=2):
+        Particle.__init__(self, pos, size, vel, col, mingfx=mingfx)
         self.alpha = col.a
         self.fade = fade
 
@@ -37,8 +39,8 @@ class FadingParticle(Particle):
 
 
 class FlippyLineParticle(Particle):
-    def __init__(self, pos, size, vel, col, rot, rotRate):
-        Particle.__init__(self, pos, size, vel, col)
+    def __init__(self, pos, size, vel, col, rot, rotRate, mingfx=2):
+        Particle.__init__(self, pos, size, vel, col, mingfx=mingfx)
         self.rot = rot
         self.rotRate = rotRate
 

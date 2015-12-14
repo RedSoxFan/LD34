@@ -52,6 +52,7 @@ class Game(object):
         # Initialize main menu
         screens.MainMenu.register_option("Play", Constants.GAME_SCREEN)
         screens.MainMenu.register_option("Info", screens.Info)
+        screens.MainMenu.register_option("Settings", screens.SettingsScreen)
         screens.MainMenu.register_option("Credits", screens.Credits)
         screens.MainMenu.register_option("Exit", Constants.EXIT_SCREEN)
 

@@ -102,7 +102,7 @@ class Player(pygame.sprite.Sprite):
                 angle = Arithmetic.lerpf(1.25 * pi, 1.75 * pi, random())
                 rotRate = random() * (0.5 * pi) - (0.25 * pi)
                 size = randint(3, 17 if splinter else 7)
-                self.particles.append(FlippyLineParticle([x, y], size, [speed * cos(angle), -speed * sin(angle)], plat.col, random() * 2.0 * pi, rotRate))
+                self.particles.append(FlippyLineParticle([x, y], size, [speed * cos(angle), -speed * sin(angle)], plat.col, random() * 2.0 * pi, rotRate, mingfx=1))
 
     def generateInnerFire(self):
         # Spawn a bunch of inner particles
@@ -140,7 +140,7 @@ class Player(pygame.sprite.Sprite):
         if self.disphealth > self.health:
             self.disphealth = Arithmetic.clamp(self.health, self.maxhealth, self.disphealth - ceil((self.disphealth - self.health) / 30.0))
 
-        if self.innerfire:
+        if Settings.GRAPHICS >= 2 and self.innerfire:
             self.generateInnerFire()
 
         # If alive, tick
@@ -208,14 +208,14 @@ class Player(pygame.sprite.Sprite):
                     speed = random() * 5.0 + 2.5
                     rotRate = random() * (0.5 * pi) - (0.25 * pi)
                     size = randint(3, 17)
-                    self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate))
+                    self.particles.append(FlippyLineParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), random() * 2.0 * pi, rotRate, mingfx=1))
 
                 # Fire particles
                 for i in xrange(randint(200, 500)):
                     angle = random() * 2.0 * pi
                     speed = random() * 5.0 + 1.0
                     size = randint(1, 3)
-                    self.particles.append(FadingParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 6))
+                    self.particles.append(FadingParticle([self.rect.center[0], self.rect.center[1]], size, [speed * cos(angle), speed * sin(angle)], pygame.Color(0, 255, 0), 6, mingfx=1))
 
         # If on screen, paint
         if self.rect.bottom > 0:
