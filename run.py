@@ -1,8 +1,6 @@
 #!/us/bin/python2
 # -*- coding: utf-8 -*-
 
-import os
-
 from pygame.color import Color
 
 import screens
@@ -25,6 +23,7 @@ class Game(object):
         Keyboard.init()
         Sound.init()
         Sound.cycleMusic()
+        pygame.display.set_icon(pygame.image.load('LD34-small.bmp'))
 
         # Center window
         info = pygame.display.Info()

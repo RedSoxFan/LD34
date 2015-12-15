@@ -77,7 +77,7 @@ class BuildExe:
         self.icon_file = None
 
         # Extra files/dirs copied to game
-        self.extra_datas = ['saxmono.ttf', 'snd', 'music']
+        self.extra_datas = ['saxmono.ttf', 'snd', 'music', 'LD34-small.bmp']
 
         # Extra/excludes python modules
         self.extra_modules = ["input", "messages", "particles", "platform", "audio",
@@ -132,12 +132,13 @@ class BuildExe:
     def run(self):
         if os.path.isdir(self.dist_dir):  # Erase previous destination dir
             shutil.rmtree(self.dist_dir)
-
+        self.icon_file = os.path.dirname(os.path.realpath(__file__)) + os.sep + 'LD34.ico'
         # Use the default pygame icon, if none given
         if self.icon_file == None:
             path = os.path.split(pygame.__file__)[0]
             self.icon_file = os.path.join(path, 'pygame.ico')
 
+        print(self.icon_file)
         # List all data files to add
         extra_datas = []
         for data in self.extra_datas:
@@ -164,7 +165,7 @@ class BuildExe:
                 'dest_base': "LD34"
             }],
             options={'py2exe': {'bundle_files': 1,
-                                'excludes': self.exclude_modules, 'packages': self.extra_modules, \
+                                'excludes': self.exclude_modules, 'packages': self.extra_modules,
                                 'dll_excludes': self.exclude_dll,
                                 'includes': self.extra_scripts}},
             zipfile=self.zipfile_name,
