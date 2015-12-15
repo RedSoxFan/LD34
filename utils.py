@@ -32,7 +32,7 @@ class Constants:
     MIN_PLAYER_WIDTH = 10
     SHRINK_KEY = pygame.K_DOWN
     SIZE_INTERVAL = 2
-    TITLE = "Ludum Dare 34"
+    TITLE = "Neon Abyss"
     WIDTH = 600
 
 

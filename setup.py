@@ -54,7 +54,7 @@ class BuildExe:
         self.script = "run.py"
 
         # Name of program
-        self.project_name = "LD34 Entry"
+        self.project_name = "Neon Abyss"
 
         # Project url
         self.project_url = "about:none"
